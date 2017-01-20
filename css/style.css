@@ -1,0 +1,70 @@
+		* {
+			padding: 0px;
+			margin: 0px;
+		}
+		div.car {
+		width: 80px;
+		height: 160px;
+		position: absolute;
+		padding: 0px 22px 0px 22px;
+		background-image: url(../images/car-2.png);
+		background-repeat: no-repeat;
+		background-position: center;
+		}
+		div.player {
+		width: 80px;
+		height: 160px;
+		position: absolute;
+		padding: 0px 22px 0px 22px;
+		background-image: url(../images/car-1.png);
+		background-repeat: no-repeat;
+		background-position: center;
+		}
+		div.fire {
+		width: 25px;
+		height: 60px;
+		position: absolute;
+		background-image: url(../images/fire.gif);
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		z-index: 5;
+		}
+		.score{
+			float:left;
+			padding:10px;
+			margin:10px;
+			border:1px solid #333;
+			text-align:center;
+		}
+		
+		.blast{
+			position: absolute;
+			width:100px;
+			height:140px;
+			z-index:2;
+			text-align:center;
+			background-image: url(../images/blast.gif);
+		}
+		#dialogue{
+			
+			    padding: 10%;
+    top: 20%;
+    display: block;
+	background: rgba(255,193,7,0.5);
+    text-align: center;
+    position: absolute;
+    width: 60%;
+    z-index: 3;
+    margin: 10%;
+			
+		}
+		#container {
+			overflow:hidden;
+			background-image:url(../images/road.jpg);
+			width: 360px;
+			height: 600px;
+			border: 1px solid black;
+			position: relative;
+			float:left;
+		}

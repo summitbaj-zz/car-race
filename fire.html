@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+
+<link rel="stylesheet" href="css/style.css" media="screen" />
+<body>
+	<div id="container">
+	<div id="dialogue">
+	<h1>Game Over</h1>
+	<span>Press any key to contine</span>
+	</div>	
+	</div>
+	<div class="score">
+	High Score
+		<div id="score-value">
+		0
+		</span>
+	</div>
+
+	<script type="text/javascript">
+		(function() {
+			
+			function getRandom(min, max) {
+				return Math.floor(Math.random()*(max-min+1)+min);
+			}
+
+			var numberOfCars = 70;
+			var containerWidth =  360;
+			var containerHeight = 500; 
+			var carSize		= 150;
+
+			function Car() {
+				this.x = getRandom(0,2)*120;
+				this.y = 0;
+				this.element;
+
+				this.init = function() {
+					this.element = document.createElement('div');
+					this.element.setAttribute('class', 'car');
+					this.element.style.top = this.y + 'px';
+					this.element.style.left = this.x + 'px';
+					document.getElementById('container').appendChild(this.element);
+				}
+
+				this.redraw = function() {
+					this.element.style.top = this.y + 'px';
+					this.element.style.left = this.x + 'px';
+				}
+			}
+
+			function Fire(){
+
+				this.x=0;
+				this.y=0;
+
+				this.init = function (){
+
+					this.element = document.createElement('div');
+					this.element.setAttribute('class', 'fire');
+					this.element.style.top = this.y + 'px';
+					this.element.style.left = this.x + 'px';
+					document.getElementById('container').appendChild(this.element);
+				}
+
+				this.redraw = function(){
+					this.element.style.top = this.y + 'px';
+					this.element.style.left = this.x + 'px';
+					
+					
+				}
+			}
+			
+			function Player() {
+				this.x = getRandom(0,2)*120;
+				this.y = 400;
+				this.collide = 0;
+				this.element;
+				
+
+				this.init = function() {
+					this.element = document.createElement('div');
+					this.element.setAttribute('class', 'player');
+					this.element.style.top = this.y + 'px';
+					this.element.style.left = this.x + 'px';
+					document.getElementById('container').appendChild(this.element);
+				}
+				
+
+				this.blast = function() {
+					var blast = document.createElement('div');
+					blast.setAttribute('class', 'blast');
+					blast.style.top = (this.y - 50) + 'px';
+					blast.style.left =  (this.x+20) + 'px';
+					document.getElementById('container').appendChild(blast);
+					
+				}
+				
+				this.reposition = function() {
+					if(this.x < -10) this.x=-10;
+					if(this.x > 260) this.x=260;
+					this.element.style.left = this.x + 'px';
+				}
+			}
+			
+			function Score(){
+			this.score = 0;
+			this.element;
+			this.init = function(){
+					this.element = document.getElementById('score-value');
+					this.element.innerHTML = this.score;
+				}
+			this.update = function(){
+					this.element.innerHTML = this.score;
+				}
+			}
+			
+			function Dialog(){
+			
+			this.element = document.getElementById('dialogue');
+				
+				this.init = function(){
+					this.element.style.visibility = "hidden";
+				}
+				
+				this.show = function(){
+					this.element.style.visibility = "visible";
+				}
+				
+				
+			}
+
+			
+			function Road(){
+				this.element;
+				this.x= 0;
+				this.init = function() {
+					this.element = document.getElementById('container');
+					this.element.style.backgroundPosition = "0 " + this.x + "px"; 
+				}
+				
+				this.reposition = function(){
+					this.element.style.backgroundPosition = "0 " + - this.x + "px"; 
+				}
+				
+			}
+			
+			function removeElementsByClass(className){
+				var elements = document.getElementsByClassName(className);
+				while(elements.length > 0)
+					{
+					elements[0].parentNode.removeChild(elements[0]);
+					}
+				}
+
+			function CarAnimation() 
+			{
+				var that = this;
+				var road = new Road();
+				var player = new Player();
+				var score = new Score();
+				var dialgue = new Dialog();
+				var startGame;
+				this.cars = [];
+				this.fire ="";
+				dialgue.init();
+				road.init();
+				player.init();
+				score.init();
+				
+				
+				this.init = function() 
+				{
+					for (var i=0; i < numberOfCars; i++) 
+					{
+						var car = new Car();
+						car.y = - parseInt(i/2)*350;
+						car.init();
+
+						this.cars.push(car);
+					}
+					
+					startGame = setInterval(this.animate, 10);
+				}
+				
+				this.reset = function(){
+					clearInterval(startGame);
+					
+					document.onkeypress=function(e)
+					{	
+						dialgue.init();
+						removeElementsByClass('player');
+						removeElementsByClass('car');
+						removeElementsByClass('blast');
+						delete that;
+						new CarAnimation().init();
+					}
+				
+				}
+				
+				
+				
+				this.animate= function()
+				{
+					for(var i=0; i < numberOfCars; i++)
+					{
+						var car = that.cars[i];
+						car.y=car.y+2;
+						car.redraw();
+					}
+					
+					score.score++;
+					road.x=road.x+5;
+					
+					if(that.fire!=""){
+						that.fire.y=that.fire.y-2;
+						that.fire.redraw();
+					}
+
+					document.onkeydown = function(e) 
+					{
+						switch (e.keyCode) {
+							case 37:
+							player.x=player.x-10;
+							break;
+							case 39:
+							player.x=player.x+10;
+							break;
+							case 32:
+							that.fire = new Fire();
+							that.fire.x = player.x;
+							that.fire.y = player.y;
+							that.fire.init();
+							break;
+						}
+					};
+					
+					for(var j=0; j < numberOfCars ; j++)
+						{
+							var a = player.x - that.cars[j].x;
+							var b = player.y - that.cars[j].y;
+							if( a >= -60 && a <= 60 && b <= 150 && b >= 0){
+								player.blast();
+								dialgue.show();
+								that.reset();
+								
+							}
+							//var radius = Math.sqrt( a*a + b*b );
+							console.log('a: '+a+' b: '+b);
+						}
+					
+					
+					
+					
+					score.update();
+					player.reposition();
+					road.reposition();
+				}
+			}
+			new CarAnimation().init();
+		})();
+	</script>
+</body>
+</html>
